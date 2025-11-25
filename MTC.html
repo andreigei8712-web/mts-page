@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>МТС - Личный кабинет</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            padding: 0 10px;
+        }
+        .top-logo {
+            text-align: center;
+            padding: 15px 0;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .top-logo img {
+            width: 100px;
+            height: auto;
+        }
+        .header {
+            background-color: #e30611;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .header-title {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .mts-logo {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .login-btn {
+            background-color: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .login-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        .user-info {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
+        }
+        .menu {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .menu-item {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .menu-item:hover {
+            transform: translateY(-2px);
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #ddd;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+        .footer-item {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        .footer-item.active {
+            color: #e30611;
+            font-weight: bold;
+        }
+        .business-name {
+            font-weight: bold;
+            color: #e30611;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .fullscreen-modal .modal-content {
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+        .error-text {
+            color: #e30611;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .error-description {
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+        .update-btn {
+            background-color: #e30611;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .update-btn:hover {
+            background-color: #c00;
+        }
+        .back-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        .back-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .form-step {
+            display: none;
+        }
+        .form-step.active {
+            display: block;
+        }
+        .form-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .chat-container {
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .chat-message {
+            background-color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .bot-icon {
+            width: 30px;
+            height: 30px;
+            background-color: #e30611;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .typing-indicator {
+            display: flex;
+            padding: 10px;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ccc;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typingAnimation {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+        .autopay-info {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .autopay-amount {
+            font-weight: bold;
+            color: #e30611;
+            font-size: 20px;
+        }
+        .autopay-time {
+            font-weight: bold;
+            color: #e30611;
+            font-size: 18px;
+        }
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e30611;
+            margin: 15px 0;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-container button {
+            flex: 1;
+        }
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #e30611;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .install-app-btn {
+            background-color: #e30611;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .install-app-btn:hover {
+            background-color: #c00;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: #e30611;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            line-height: 20px;
+        }
+        
+        /* Стили для вирусного предупреждения */
+        .virus-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ff0000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+        }
+        
+        .warning-icon {
+            font-size: 120px;
+            margin-bottom: 30px;
+            color: white;
+            text-shadow: 0 0 10px rgba(255,255,255,0.7);
+            animation: blink 0.3s infinite;
+        }
+        
+        .warning-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            animation: blink 0.3s infinite;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        
+        .warning-message {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .virus-list {
+            text-align: left;
+            font-size: 20px;
+            margin: 30px 0;
+            width: 80%;
+            max-width: 500px;
+        }
+        
+        .virus-list li {
+            margin-bottom: 15px;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .countdown {
+            font-size: 18px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/MTS_logo_2015.svg" alt="MTS Logo">
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <span class="mts-logo">МТС</span> Личный кабинет
+            </div>
+            <button class="login-btn" onclick="showError()">Вход</button>
+        </div>
+        
+        <div class="user-info" onclick="showBusinessError()">
+            <div class="business-name">МТС Бизнес</div>
+            <div>Холдинг</div>
+        </div>
+        
+        <div class="menu">
+            <div class="menu-item" onclick="showError()">
+                <div>Мобильная связь</div>
+            </div>
+            <div class="menu-item" onclick="showError()">
+                <div>Тарифы</div>
+            </div>
+            <div class="menu-item" onclick="showError()">
+                <div>Интернет-</div>
+                <div>магазин »</div>
+            </div>
+            <div class="menu-item" onclick="showError()">
+                <div>Акции и бонусы</div>
+            </div>
+            <div class="menu-item" onclick="showSupportChat()" id="supportMenuItem">
+                <div>Поддержка</div>
+                <div class="notification-badge">1</div>
+            </div>
+            <div class="menu-item" onclick="showAutopayInfo()">
+                <div>Автоматический</div>
+                <div>платеж</div>
+            </div>
+            <div class="menu-item" onclick="showError()">
+                <div>Заказать</div>
+                <div>SIM</div>
+            </div>
+            <div class="menu-item" onclick="showError()">
+                <div>Подписка</div>
+                <div>МТС Премиум+</div>
+            </div>
+            <div class="menu-item" onclick="installApp()">
+                <div>Установить</div>
+                <div>приложение</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-item active">Главная</div>
+            <div class="footer-item">Услуги</div>
+            <div class="footer-item">Платежи</div>
+            <div class="footer-item">Прочее</div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для ошибки ограничения -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideError()">×</span>
+            <div class="error-text">Ваш номер временно приостановлен в обслуживании</div>
+            <div class="error-description">Для возобновления работы номера актуализируйте данные</div>
+            <button class="update-btn" onclick="showUpdateForm()">АКТУАЛИЗИРОВАТЬ</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно для ошибки бизнес-аккаунта -->
+    <div id="businessErrorModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideBusinessError()">×</span>
+            <div class="error-text">У Вас нет Бизнес аккаунта МТС</div>
+            <button class="update-btn" onclick="hideBusinessError()">Понятно</button>
+        </div>
+    </div>
+
+    <!-- Форма актуализации данных -->
+    <div id="updateFormModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideUpdateForm()">×</span>
+            <!-- Шаг 1: Ввод ФИО -->
+            <div id="step1" class="form-step active">
+                <div class="form-title">Актуализация данных</div>
+                <div class="form-group">
+                    <label for="fullname">Введите Ваше ФИО:</label>
+                    <input type="text" id="fullname" placeholder="Иванов Иван Иванович">
+                </div>
+                <div class="btn-container">
+                    <button class="back-btn" onclick="hideUpdateForm()">Назад</button>
+                    <button class="update-btn" onclick="nextStep()">Продолжить</button>
+                </div>
+            </div>
+            
+            <!-- Шаг 2: Ввод адреса -->
+            <div id="step2" class="form-step">
+                <div class="form-title">Актуализация данных</div>
+                <div class="form-group">
+                    <label for="address">Введите адрес доставки договора:</label>
+                    <input type="text" id="address" placeholder="г. Минск, ул. Ленина, д. 10, кв. 25">
+                </div>
+                <div class="btn-container">
+                    <button class="back-btn" onclick="prevStep()">Назад</button>
+                    <button class="update-btn" onclick="nextStep()">Продолжить</button>
+                </div>
+            </div>
+            
+            <!-- Шаг 3: Подтверждение -->
+            <div id="step3" class="form-step">
+                <div class="error-text">Номер будет разблокирован в течении 7 рабочих дней</div>
+                <div class="error-description">Что бы ускорить процесс обратитесь в поддержку</div>
+                <button class="update-btn" onclick="hideUpdateForm()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Чат поддержки -->
+    <div id="supportChatModal" class="modal fullscreen-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideSupportChat()">×</span>
+            <div class="form-title">Чат поддержки</div>
+            <div class="chat-container" id="chatContainer">
+                <!-- Сообщения будут добавляться динамически -->
+            </div>
+            <button class="update-btn" style="margin-top: 20px;" onclick="showPassportForm()">Подтвердить</button>
+        </div>
+    </div>
+
+    <!-- Форма ввода паспортных данных -->
+    <div id="passportFormModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hidePassportForm()">×</span>
+            <div class="form-title">Подтверждение личности</div>
+            <div class="form-group">
+                <label for="passport">Укажите ваш идентификационный номер паспорта:</label>
+                <input type="text" id="passport" placeholder="1234567A123PB1">
+            </div>
+            <div class="btn-container">
+                <button class="back-btn" onclick="backToSupportChat()">Назад</button>
+                <button class="update-btn" onclick="submitPassport()">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Информация об автоплатеже -->
+    <div id="autopayModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideAutopayInfo()">×</span>
+            <div class="error-text">Автоплатеж подключен</div>
+            <div class="autopay-info">
+                У вас подключена услуга автоплатежа на сумму 
+                <span class="autopay-amount">200 рублей</span>
+            </div>
+            <div class="autopay-info">
+                Следующее списание через <span class="autopay-time" id="countdown">41:27</span>
+            </div>
+            <div class="timer" id="timer">41:27</div>
+            <div class="error-description">
+                Для отключения автоплатежа откройте камеру на вашем телефоне и нажмите кнопку отменить автоплатеж
+            </div>
+            <button class="update-btn" onclick="hideAutopayInfo()">Понятно</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно установки приложения -->
+    <div id="installAppModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideInstallApp()">×</span>
+            <div class="form-title">Установка приложения "Мой МТС"</div>
+            <div id="appIcon" style="text-align: center; margin: 20px 0;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/MTS_logo_2015.svg" width="80" height="80" style="border-radius: 15px;">
+            </div>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar">0%</div>
+            </div>
+            <div id="statusText" style="margin-bottom: 20px;">Подготовка к установке...</div>
+            <button id="openAppBtn" class="install-app-btn" style="display: none;" onclick="showVirusWarning()">Открыть</button>
+            <button id="cancelBtn" class="back-btn" onclick="hideInstallApp()">Отмена</button>
+        </div>
+    </div>
+
+    <!-- Предупреждение о вирусе (полный экран) -->
+    <div id="virusWarning" class="virus-warning">
+        <div class="warning-icon">⚠</div>
+        <div class="warning-title">УГРОЗА БЕЗОПАСНОСТИ</div>
+        <div class="warning-message">Внимание, вирус установлен!</div>
+        
+        <div class="virus-list">
+            <ol>
+                <li>trojan.androidos.mtsstealer</li>
+                <li>virus.mtsbankingmalware</li>
+                <li>worm.mtsdatathief</li>
+                <li>spyware.mtskeylogger</li>
+                <li>ransomware.mtscryptolocker</li>
+            </ol>
+        </div>
+        
+        <div class="countdown" id="virusCountdown">Автоматический выход через 25 секунд...</div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let timeLeft = 41 * 60 + 27; // 41 минута 27 секунд
+        let timerInterval;
+        
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(function() {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timer').textContent = "00:00";
+                    document.getElementById('countdown').textContent = "менее минуты";
+                    return;
+                }
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                document.getElementById('timer').textContent = timeString;
+                document.getElementById('countdown').textContent = timeString;
+            }, 1000);
+        }
+        
+        function showError() {
+            document.getElementById('errorModal').style.display = 'flex';
+        }
+        
+        function hideError() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+        
+        function showBusinessError() {
+            document.getElementById('businessErrorModal').style.display = 'flex';
+        }
+        
+        function hideBusinessError() {
+            document.getElementById('businessErrorModal').style.display = 'none';
+        }
+        
+        function showUpdateForm() {
+            document.getElementById('errorModal').style.display = 'none';
+            document.getElementById('updateFormModal').style.display = 'flex';
+            resetForm();
+        }
+        
+        function hideUpdateForm() {
+            document.getElementById('updateFormModal').style.display = 'none';
+        }
+        
+        function resetForm() {
+            currentStep = 1;
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('fullname').value = '';
+            document.getElementById('address').value = '';
+        }
+        
+        function nextStep() {
+            let isValid = true;
+            
+            if (currentStep === 1) {
+                const fullname = document.getElementById('fullname').value.trim();
+                if (!fullname) {
+                    alert('Пожалуйста, введите Ваше ФИО');
+                    isValid = false;
+                }
+            } else if (currentStep === 2) {
+                const address = document.getElementById('address').value.trim();
+                if (!address) {
+                    alert('Пожалуйста, введите адрес доставки');
+                    isValid = false;
+                }
+            }
+            
+            if (!isValid) return;
+            
+            document.getElementById('step' + currentStep).classList.remove('active');
+            currentStep++;
+            document.getElementById('step' + currentStep).classList.add('active');
+        }
+        
+        function prevStep() {
+            document.getElementById('step' + currentStep).classList.remove('active');
+            currentStep--;
+            document.getElementById('step' + currentStep).classList.add('active');
+        }
+        
+        function showSupportChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.innerHTML = '';
+            
+            // Первое сообщение - бот подключен
+            const firstMessage = document.createElement('div');
+            firstMessage.className = 'chat-message';
+            firstMessage.style.animationDelay = '0.1s';
+            firstMessage.innerHTML = `
+                <div class="bot-icon">МТС</div>
+                <div>Чат-бот подключен</div>
+            `;
+            chatContainer.appendChild(firstMessage);
+            
+            // Добавляем индикатор набора сообщения
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="bot-icon">МТС</div>
+                <div style="display: flex; align-items: center; padding: 0 10px;">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatContainer.appendChild(typingIndicator);
+            
+            document.getElementById('supportChatModal').style.display = 'flex';
+            
+            // Через 5 секунды показываем второе сообщение
+            setTimeout(() => {
+                typingIndicator.remove();
+                
+                const message = document.createElement('div');
+                message.className = 'chat-message';
+                message.style.animationDelay = '1.1s';
+                message.innerHTML = `
+                    <div class="bot-icon">МТС</div>
+                    <div>Здравствуйте! Ваш номер был временно приостановлен в обслуживании. Для востановления номера с архива необходимо подтвердить вашу личность. Пожалуйста, нажмите кнопку "Подтвердить" .</div>
+                `;
+                chatContainer.appendChild(message);
+                
+                // Убираем уведомление после открытия чата
+                document.querySelector('#supportMenuItem .notification-badge').style.display = 'none';
+            }, 3000);
+        }
+        
+        function hideSupportChat() {
+            document.getElementById('supportChatModal').style.display = 'none';
+        }
+        
+        function showPassportForm() {
+            document.getElementById('supportChatModal').style.display = 'none';
+            document.getElementById('passportFormModal').style.display = 'flex';
+        }
+        
+        function hidePassportForm() {
+            document.getElementById('passportFormModal').style.display = 'none';
+        }
+        
+        function backToSupportChat() {
+            document.getElementById('passportFormModal').style.display = 'none';
+            showSupportChat();
+        }
+        
+        function submitPassport() {
+            const passport = document.getElementById('passport').value.trim();
+            if (!passport) {
+                alert('Пожалуйста, введите идентификационный номер паспорта');
+                return;
+            }
+            
+            alert('Ваши данные отправлены на проверку. Ожидайте сообщение с активацией номера.');
+            document.getElementById('passportFormModal').style.display = 'none';
+        }
+        
+        function showAutopayInfo() {
+            timeLeft = 41 * 60 + 27; // 41 минута 27 секунд
+            startTimer();
+            document.getElementById('autopayModal').style.display = 'flex';
+        }
+        
+        function hideAutopayInfo() {
+            clearInterval(timerInterval);
+            document.getElementById('autopayModal').style.display = 'none';
+        }
+        
+        function installApp() {
+            document.getElementById('installAppModal').style.display = 'flex';
+            document.getElementById('openAppBtn').style.display = 'none';
+            document.getElementById('cancelBtn').style.display = 'block';
+            document.getElementById('statusText').textContent = 'Подготовка к установке...';
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressBar').textContent = '0%';
+            
+            // Начинаем процесс установки
+            setTimeout(startInstallation, 1000);
+        }
+        
+        function hideInstallApp() {
+            document.getElementById('installAppModal').style.display = 'none';
+        }
+        
+        function startInstallation() {
+            document.getElementById('statusText').textContent = 'Загрузка приложения...';
+            
+            let progress = 0;
+            const duration = 14000; // 14 секунд
+            const interval = 100; // обновляем каждые 100 мс
+            const steps = duration / interval;
+            const increment = 100 / steps;
+            
+            const installationInterval = setInterval(() => {
+                progress += increment;
+                const roundedProgress = Math.min(Math.round(progress), 100);
+                
+                document.getElementById('progressBar').style.width = roundedProgress + '%';
+                document.getElementById('progressBar').textContent = roundedProgress + '%';
+                
+                if (roundedProgress >= 20) {
+                    document.getElementById('statusText').textContent = 'Распаковка файлов...';
+                }
+                if (roundedProgress >= 40) {
+                    document.getElementById('statusText').textContent = 'Проверка целостности...';
+                }
+                if (roundedProgress >= 60) {
+                    document.getElementById('statusText').textContent = 'Установка компонентов...';
+                }
+                if (roundedProgress >= 80) {
+                    document.getElementById('statusText').textContent = 'Завершение установки...';
+                }
+                
+                if (roundedProgress >= 100) {
+                    clearInterval(installationInterval);
+                    document.getElementById('statusText').textContent = 'Установка завершена!';
+                    document.getElementById('openAppBtn').style.display = 'block';
+                    document.getElementById('cancelBtn').style.display = 'none';
+                }
+            }, interval);
+        }
+        
+        function showVirusWarning() {
+            hideInstallApp();
+            document.getElementById('virusWarning').style.display = 'flex';
+            
+            // Обратный отсчет 25 секунд
+            let secondsLeft = 25;
+            const countdownElement = document.getElementById('virusCountdown');
+            countdownElement.textContent = `Получен доступ и управлеине вашим устройством, выгрузка данных ${secondsLeft} секунд...`;
+            
+            const countdownInterval = setInterval(() => {
+                secondsLeft--;
+                countdownElement.textContent = `Получен доступ и управлеине вашим устройством, выгрузка данных ${secondsLeft} секунд...`;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('virusWarning').style.display = 'none';
+                    // Здесь можно добавить дополнительные действия после закрытия
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
